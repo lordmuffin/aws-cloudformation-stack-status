@@ -1,6 +1,10 @@
 
 # aws-cloudformation-stack-status
 
+Updated: I have pulled this and updated it to account for the --profile in
+aws-cli.  As long as the profile exists you can use it now.
+
+
 Clean display of single most recent event status for each resource in
 a CloudFormation stack.
 

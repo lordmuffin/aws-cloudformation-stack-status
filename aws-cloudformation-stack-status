@@ -1,16 +1,18 @@
 #!/bin/bash
 #
-# aws-cloudformation-stack-status --region $region --watch --stack-name $stack
+# aws-cloudformation-stack-status --region $region --watch --stack-name $stack --profile $profile
 #
-# See: https://github.com/alestic/aws-cloudformation-stack-status
+# See: https://github.com/lordmuffin/aws-cloudformation-stack-status
 #
 region_opt=
 stack_names=
+profile=
 watch=
 while [ $# -gt 0 ]; do
   case $1 in
     --region)     region_opt="--region $2";               shift 2 ;;
     --stack-name) stack_names="$stack_names $2";          shift 2 ;;
+    --profile)    profile="--profile $2";                 shift 2 ;;
     --watch)      watch=1;                                shift ;;
     --*)          echo "$0: Unrecognized option: $1" >&2; exit 1  ;;
     *) break ;;
@@ -19,13 +21,15 @@ done
 set -- $stack_names $@
 
 if [ -n "$watch" ]; then
-  watch -t -n1 $0 $region_opt "$@"
+  watch -t -n1 $0 $region_opt $profile "$@"
 fi
 
 for stack_name; do
+  echo "LastRefreshTime: $(date +%H:%M:%S)"
   aws cloudformation describe-stack-events \
     $region_opt \
     --stack-name "$stack_name" \
+    $profile \
     --output text \
     --query 'StackEvents[*].[ResourceStatus,LogicalResourceId,ResourceType,Timestamp]' |
   sort -k4r |
