@@ -38,3 +38,4 @@ One time display of latest status for each stack resource:
 
 This script does require that you have already installed and
 configured the aws-cli.
+brew install watch = you need this if your on a mac.
